@@ -19,10 +19,11 @@ func NewCustomerController(customerService *application.CustomerService) *Custom
 }
 
 func (cc *CustomerController) Create(c echo.Context) error {
-	input := customer.ICreateCustomer{
-		Name:  "haha",
-		Email: "haha@haha.com",
+	var input customer.ICreateCustomer
+	if err := c.Bind(&input); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
 	}
+
 	cus, err := cc.customerService.Create(input)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]any{
